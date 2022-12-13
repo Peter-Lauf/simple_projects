@@ -1,25 +1,55 @@
-import tkinter as tk
+import tkinter as ui
 from tkinter import *
-import  time
+import time
+import math
 
-root = tk.Tk()
-frame = tk.Frame(root, bd=5, relief=SUNKEN)
-root.geometry("400x400")
+
+window = ui.Tk()
+window.geometry("600x600")
 
 
 def update_time():
-    hours = time.strftime("%H")
-    minutes = time.strftime("%M")
-    seconds = time.strftime("%S")
-    am_or_pm = time.strftime("%p")
-    time_text = hours + ":" + minutes + ":" + seconds + " " + am_or_pm
+    hours = int(time.strftime("%H"))
+    minutes = int(time.strftime("%M"))
+    seconds = int(time.strftime("%S"))
 
+    seconds_x = seconds_hand_len * math.sin(math.radians(seconds * 6)) + center_x
+    seconds_y = -1 * seconds_hand_len * math.cos(math.radians(seconds * 6)) + center_y
+    canvas.coords(seconds_hand, center_x, center_y, seconds_x, seconds_y)
 
-canvas = tk.Canvas(frame, width=400, height=400, bg="goldenrod3")
-canvas.pack(expand=True, fill="both")
+    minutes_x = minutes_hand_len * math.sin(math.radians(minutes * 6)) + center_x
+    minutes_y = -1 * minutes_hand_len * math.cos(math.radians(minutes * 6)) + center_y
+    canvas.coords(minutes_hand, center_x, center_y, minutes_x, minutes_y)
 
-bg = tk.PhotoImage(file="clock_face.png")
-canvas.create_image(200, 200, image=bg)
+    hours_x = hours_hand_len * math.sin(math.radians(hours * 30)) + center_x
+    hours_y = -1 * hours_hand_len * math.cos(math.radians(hours * 30)) + center_y
+    canvas.coords(hours_hand, center_x, center_y, hours_x, hours_y)
 
+    window.after(1000, update_time)
+
+canvas = ui.Canvas(window, width=600, height=600, bg="plum3")
+canvas.pack(expand=True, fill='both')
+
+bg = ui.PhotoImage(file='new.png')
+canvas.create_image(300, 300, image=bg)
+
+center_x = 300
+center_y = 300
+seconds_hand_len = 240
+minutes_hand_len = 190
+hours_hand_len = 150
+
+seconds_hand = canvas.create_line(300, 300,
+                                  300 + seconds_hand_len, 300 + seconds_hand_len,
+                                  width=2, fill="red")
+
+minutes_hand = canvas.create_line(300, 300,
+                                  300 + minutes_hand_len, 300 + minutes_hand_len,
+                                  width=3, fill="black")
+
+hours_hand = canvas.create_line(300, 300,
+                                  300 + hours_hand_len, 300 + hours_hand_len,
+                                  width=6, fill="black")
 update_time()
-root.mainloop()
+
+window.mainloop()
